@@ -1,0 +1,92 @@
+{% extends 'lottery/base.html' %}
+
+{% block lottery_setup %}
+    <h2>【設置獎項與參與者】</h2>
+
+    <!-- 獎品設置區域 -->
+    <div class="container">
+        <h3>獎項設置</h3>
+        <form method="post" class="prize_setting">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="prize_name">獎項名稱</label>
+                <input type="text" id="prize_name" name="prize_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="prize_quantity">數量</label>
+                <input type="number" id="prize_quantity" name="prize_quantity" class="form-control" required min="1">
+            </div>
+            <div class="form-group">
+                <label for="prize_order">排序</label>
+                <input type="number" id="prize_order" name="prize_order" class="form-control" required min="1">
+            </div>
+            <button type="submit" name="add_prize" class="btn btn-success form-btn">新增獎項</button>
+        </form>
+
+        <hr>
+
+        <!-- 顯示現有獎項列表 -->
+        <h3>現有獎項</h3>
+        <table class="table all_prizes">
+            <thead>
+                <tr>
+                    <th class="th-order">排序</th>
+                    <th class="th-prize_name">獎項名稱</th>
+                    <th class="th-quantity">數量</th>
+                    <th class="th-control">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prize in prizes %}
+                <tr>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <td><input type="number" name="prize_order" value="{{ prize.order }}" class="form-control"></td>
+                        <td><input type="text" name="prize_name" value="{{ prize.name }}" class="form-control"></td>
+                        <td><input type="number" name="prize_quantity" value="{{ prize.quantity }}" class="form-control"></td>
+                        <td>
+                            <input type="hidden" name="prize_id" value="{{ prize.id }}">
+                            <button type="submit" name="update_prize" class="btn btn-warning">修改</button>
+                            <button type="submit" name="delete_prize" class="btn btn-danger" onsubmit="return confirmDelete();">刪除</button>
+                        </td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+    
+    <!-- 抽獎者名單設置區域 -->
+    <div class="container mt-4">
+        <h3>抽獎者名單設置</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group add_participants_area">
+                <textarea name="participants_text" class="form-control" rows="10" placeholder="請將名單從 Excel 黏貼至此，並以換行區分每一位抽獎者"></textarea>
+            </div>
+            <button type="submit" name="save_participants" class="btn btn-primary form-btn">儲存抽獎者名單</button>
+        </form>
+        {% if participants %}
+            <h4>已經輸入的參與者名單</h4>
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>參與者名稱</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for participant in participants %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ participant }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+{% endblock %}

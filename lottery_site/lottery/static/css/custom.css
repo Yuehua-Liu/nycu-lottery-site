@@ -1,0 +1,142 @@
+/* custom.css */
+body {
+    background-color: #ececec; /* 設置背景顏色 */
+}
+
+.navbar {
+    background-color: #007bff !important; /* 覆蓋 Bootstrap 預設的 navbar 顏色 */
+}
+
+.custom-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.custom-table {
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: #f3f1f1; /* 背景颜色 */
+    color: rgb(2, 0, 0);
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+/* 创建雪花容器 */
+.snow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none; /* 使雪花不影响页面的其他交互 */
+    z-index: 9999; /* 确保雪花在其他内容上面 */
+}
+
+/* 雪花元素 */
+.snowflake {
+    position: absolute;
+    top: -10px; /* 雪花从页面顶部开始掉落 */
+    color: white;
+    font-size: 1.5rem; /* 雪花大小 */
+    user-select: none; /* 防止选中雪花 */
+    opacity: 0.4;
+    animation: snow 10s linear infinite;
+}
+
+/* 下雪动画 */
+@keyframes snow {
+    0% {
+        transform: translateY(-10px);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+}
+
+
+/* 抽獎動畫 字放大 */
+#loading-animation {
+    position: fixed;
+    top: 35%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    font-size: 80px;
+    color: #ff0022;
+    /* 字橫式 */
+    writing-mode: vertical-lr;
+}
+
+/* 排版設定 */
+.sys-title {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+.sys-title::before {
+    content: "🎄";
+    margin-left: 10px;
+}
+.sys-title::after {
+    content: "🎄";
+    margin-right: 10px;
+}
+
+.tab-link {
+    font-size: 20px;
+    font-weight: bold;
+}
+.tab-link-setting::before {
+    /* 齒輪圖示 */
+    content: "⚙️";
+    margin-left: 10px;
+}
+.tab-link-draw::before {
+    /* 抽獎圖示 */
+    content: "🎁";
+    margin-left: 10px;
+}
+
+/* btn 下面留空間 */
+.btn {
+    margin-bottom: 10px;
+}
+.form-btn{
+    margin-top: 10px;
+}
+
+
+
+/* -----------------lottery_setting.html----------------- */
+.all_prizes {
+    width: 60%;
+}
+.th-order {
+    width: 12%;
+}
+.th-prize_name {
+    width: 35%;
+}
+.th-quantity {
+    width: 12%;
+}
+.th-control {
+    width: 50%;
+}
+.add_participants_area {
+    width: 15%;
+}
+/* class: prize_setting 寬度佔一半 */
+.prize_setting {
+    width: 15%;
+}

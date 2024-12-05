@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYCU-財金專班抽獎系統</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    
+    <!-- 引入自定義的 CSS -->
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+    <style>
+        .tabs {
+            overflow: hidden;
+            background-color: #f1f1f1;
+        }
+
+        .tabs a {
+            float: left;
+            display: block;
+            padding: 14px 16px;
+            background-color: #ddd;
+            color: #000;
+            text-align: center;
+            text-decoration: none;
+            width: 30%;
+            cursor: pointer;
+        }
+
+        .tabs a:hover {
+            background-color: #ddd;
+        }
+
+        .tabs a.active {
+            background-color: #4CAF50; /* Green color */
+            color: white;
+        }
+
+        .tab-content {
+            padding: 20px;
+            display: none;
+            border-top: 1px solid #ddd;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="sys-title">2024 NYCU 財金所專班聖誕尾牙抽獎系統</h1>
+    <!-- 雪花动画的容器 -->
+    <div class="snow"></div>
+    
+    <!-- Tab導航 -->
+    <div class="tabs">
+        <!-- 判斷當前請求路徑是否為 '/lottery_setup/'，如果是，設置該 Tab 為 active -->
+        <a href="{% url 'lottery_setup' %}" id="lottery_setup_tab" class="tab-link tab-link-setting {% if request.path == '/lottery_setup/' %}active{% endif %}">抽獎設置</a>
+        
+        <!-- 判斷當前請求路徑是否為 '/draw_lottery/'，如果是，設置該 Tab 為 active -->
+        <a href="{% url 'draw_lottery' %}" id="draw_lottery_tab" class="tab-link tab-link-draw {% if request.path == '/draw_lottery/' %}active{% endif %}">聖誕尾牙抽獎</a>
+    </div>
+
+    <!-- Tab內容 -->
+    <div id="lottery_setup" class="tab-content {% if request.path == '/lottery_setup/' %}active{% endif %}">
+        {% block lottery_setup %}{% endblock %}
+    </div>
+    
+    <div id="draw_lottery" class="tab-content {% if request.path == '/draw_lottery/' %}active{% endif %}">
+        {% block draw_lottery %}{% endblock %}
+    </div>
+
+    <script>
+        // 當頁面加載時，顯示當前 tab 內容
+        window.addEventListener('load', function() {
+            const tabs = document.querySelectorAll('.tab-link');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            // 根據當前 URL 顯示對應的 tab 和內容
+            const path = window.location.pathname; // 獲取當前頁面的完整 URL 路徑
+            if (path) {
+                setActiveTab(path);
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(event) {
+                    event.preventDefault();  // 阻止默認行為，避免頁面跳轉
+
+                    // 獲取目標內容的 URL
+                    const targetPath = tab.getAttribute('href'); // 獲取 href 屬性值
+
+                    // 更新 URL 的路徑
+                    window.location.pathname = targetPath;
+
+                    // 更新顯示的 tab 和內容
+                    setActiveTab(targetPath);
+                });
+            });
+        });
+
+        // 切換 tab 和內容顯示
+        function setActiveTab(targetPath) {
+            const tabs = document.querySelectorAll('.tab-link');
+            const contents = document.querySelectorAll('.tab-content');
+
+            // 移除所有 tabs 的 active 類
+            tabs.forEach(tab => tab.classList.remove('active'));
+            // 顯示選中的 tab 並加上 active 類
+            const activeTab = document.querySelector(`a[href="${targetPath}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+
+            // 隱藏所有內容區
+            contents.forEach(content => content.classList.remove('active'));
+            // 顯示對應的內容區
+            const path = window.location.pathname.replace(/\//g, '');
+            const activeContent = document.querySelector(`div[id="${path}"]`);
+
+            if (activeContent) {
+                activeContent.classList.add('active');
+            }
+        }
+    </script>
+
+    <!-- 添加雪花动态效果的 JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const snowContainer = document.querySelector('.snow');
+            const numberOfSnowflakes = 50; // 雪花数量
+
+            // 生成雪花元素
+            for (let i = 0; i < numberOfSnowflakes; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.innerHTML = '❄️'; // 雪花图案，使用 emoji
+
+                // 设置随机的位置、速度和大小
+                snowflake.style.left = `${Math.random() * 100}vw`; // 随机水平位置
+                snowflake.style.animationDuration = `${Math.random() * 5 + 5}s`; // 随机动画时长
+                snowflake.style.animationDelay = `${Math.random() * 5}s`; // 随机延迟
+
+                snowContainer.appendChild(snowflake);
+            }
+        });
+    </script>
+</body>
+</html>

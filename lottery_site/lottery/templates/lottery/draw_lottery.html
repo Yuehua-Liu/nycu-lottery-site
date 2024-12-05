@@ -1,0 +1,159 @@
+{% extends 'lottery/base.html' %}
+
+{% block draw_lottery %}
+    <h2>【抽獎區】</h2>
+    <div class="container">
+        <h3>獎項列表</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>獎項名稱</th>
+                    <th>數量</th>
+                    <th>剩餘數量</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prize in prizes %}
+                <tr>
+                    <td>{{ prize.name }}</td>
+                    <td>{{ prize.quantity }}</td>
+                    <td>{{ prize.remaining }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <button id="draw_btn" class="btn btn-primary mt-4">開始抽獎</button>
+    <button id="clean_all_record_btn" class="btn btn-danger mt-4">清除抽獎資料</button>
+
+    <!-- 信息消息 -->
+    <div id="info_msg" class="alert alert-info" style="display:none;"></div>
+    <!-- 加入抽獎動畫 -->
+    <div id="loading-animation" class="spinner-border text-primary" style="display:none;" role="status">
+        <span class="sr-only">抽獎中</span>
+    </div>
+
+    <hr>
+
+    <!-- 顯示抽獎者名單表格 -->
+    <div id="winner_table">
+        <h4>中獎者名單</h4>
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>獎項</th>
+                    <th>中獎者</th>
+                </tr>
+            </thead>
+            <tbody id="winner_list">
+                {% for winner in winners %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ winner.prize }}</td>
+                        <td>{{ winner.participant }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 清除抽獎資料的按钮
+        document.getElementById('clean_all_record_btn').addEventListener('click', function() {
+            // 使用 confirm() 弹出确认框
+            if (confirm("確定要清除所有抽獎資料嗎？")) {
+                // 顯示清除資料進行中的訊息
+                document.getElementById('info_msg').style.display = 'none';
+                
+                // 發送 AJAX 請求到後端
+                fetch("{% url 'draw_lottery' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ 'action': 'clean_all_record' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // 隱藏動畫
+                    document.getElementById('loading-animation').style.display = 'none';
+
+                    // 更新中獎者名單
+                    let winnerList = document.getElementById('winner_list');
+                    winnerList.innerHTML = '';  // 清空原來的名單
+
+                    // 更新獎品剩餘數量
+                    let prizeTable = document.querySelector('.table tbody');
+                    data.prizes.forEach((prize, index) => {
+                        prizeTable.rows[index].cells[2].innerText = prize.remaining;
+                    });
+
+                    // 顯示清除抽獎資料的訊息
+                    document.getElementById('info_msg').innerText = data.msg;
+                    document.getElementById('info_msg').style.display = 'block';
+                })
+                .catch(error => {
+                    // 隱藏動畫並顯示錯誤訊息
+                    document.getElementById('loading-animation').style.display = 'none';
+                    console.error('Error:', error);
+                    document.getElementById('info_msg').innerText = '清除抽獎資料發生錯誤，請稍後再試！';
+                    document.getElementById('info_msg').style.display = 'block';
+                });
+            }
+        });
+
+        // 抽獎的按钮
+        document.getElementById('draw_btn').addEventListener('click', function() {
+            // 顯示抽獎動畫
+            document.getElementById('loading-animation').style.display = 'block';
+            document.getElementById('info_msg').style.display = 'none';
+
+            // 設置延遲2秒後開始抽獎
+            setTimeout(function() {
+                // 發送 AJAX 請求到後端
+                fetch("{% url 'draw_lottery' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ 'action': 'draw' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // 隱藏動畫
+                    document.getElementById('loading-animation').style.display = 'none';
+
+                    // 更新中獎者名單
+                    let winnerList = document.getElementById('winner_list');
+                    winnerList.innerHTML = '';  // 清空原來的名單
+                    data.winners.forEach((winner, index) => {
+                        let row = document.createElement('tr');
+                        row.innerHTML = `<td>${index + 1}</td><td>${winner.prize_name}</td><td>${winner.participant_name}</td>`;
+                        winnerList.appendChild(row);
+                    });
+
+                    // 更新獎品剩餘數量
+                    let prizeTable = document.querySelector('.table tbody');
+                    data.prizes.forEach((prize, index) => {
+                        prizeTable.rows[index].cells[2].innerText = prize.remaining;
+                    });
+
+                    // 顯示抽獎訊息
+                    document.getElementById('info_msg').innerText = data.msg;
+                    document.getElementById('info_msg').style.display = 'block';
+                })
+                .catch(error => {
+                    // 隱藏動畫並顯示錯誤訊息
+                    document.getElementById('loading-animation').style.display = 'none';
+                    console.error('Error:', error);
+                    document.getElementById('info_msg').innerText = '抽獎發生錯誤，請稍後再試！';
+                    document.getElementById('info_msg').style.display = 'block';
+                });
+            }, 1500);  // 延遲 1.5 秒後執行
+        });
+    </script>
+{% endblock %}
