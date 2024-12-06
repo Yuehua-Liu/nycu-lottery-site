@@ -3,18 +3,20 @@
 {% block draw_lottery %}
     <h2>【抽獎區】</h2>
     <div class="container">
-        <h3>獎項列表</h3>
-        <table class="table">
+        <h3 id="title-prize_list">獎項列表</h3>
+        <table class="table prize_table">
             <thead>
                 <tr>
-                    <th>獎項名稱</th>
-                    <th>數量</th>
-                    <th>剩餘數量</th>
+                    <th class="th-draw-order">#</th>
+                    <th class="th-draw-prize_name">獎項名稱</th>
+                    <th class="th-draw-quantity">數量</th>
+                    <th class="th-draw-remaining">剩餘數量</th>
                 </tr>
             </thead>
             <tbody>
                 {% for prize in prizes %}
                 <tr>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ prize.name }}</td>
                     <td>{{ prize.quantity }}</td>
                     <td>{{ prize.remaining }}</td>
@@ -22,41 +24,41 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div>
 
-    <button id="draw_btn" class="btn btn-primary mt-4">開始抽獎</button>
-    <button id="clean_all_record_btn" class="btn btn-danger mt-4">清除抽獎資料</button>
+        <button id="draw_btn" class="btn btn-primary mt-4">開始抽獎</button>
+        <button id="clean_all_record_btn" class="btn btn-danger mt-4">清除抽獎資料</button>
 
-    <!-- 信息消息 -->
-    <div id="info_msg" class="alert alert-info" style="display:none;"></div>
-    <!-- 加入抽獎動畫 -->
-    <div id="loading-animation" class="spinner-border text-primary" style="display:none;" role="status">
-        <span class="sr-only">抽獎中</span>
-    </div>
+        <!-- 信息消息 -->
+        <div id="info_msg" class="alert alert-info" style="display:none;"></div>
+        <!-- 加入抽獎動畫 圖示用彩球或者獎盃 -->
+        <div id="loading-animation" class="spinner-border text-primary" style="display:none;" role="status">
+            <span class="sr-only">抽獎中</span>
+        </div>
 
-    <hr>
+        <hr>
 
-    <!-- 顯示抽獎者名單表格 -->
-    <div id="winner_table">
-        <h4>中獎者名單</h4>
-        <table class="table mt-4">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>獎項</th>
-                    <th>中獎者</th>
-                </tr>
-            </thead>
-            <tbody id="winner_list">
-                {% for winner in winners %}
+        <!-- 顯示抽獎者名單表格 -->
+        <div id="winner_table">
+            <h4 id="title-winner_list">中獎者名單</h4>
+            <table class="table mt-4 winner_table">
+                <thead>
                     <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ winner.prize }}</td>
-                        <td>{{ winner.participant }}</td>
+                        <th class="th-winner-order">#</th>
+                        <th class="th-winner-prize_name">獎項</th>
+                        <th class="th-winner-name">中獎者</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="winner_list">
+                    {% for winner in winners %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ winner.prize }}</td>
+                            <td>{{ winner.participant }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
@@ -88,7 +90,7 @@
                     // 更新獎品剩餘數量
                     let prizeTable = document.querySelector('.table tbody');
                     data.prizes.forEach((prize, index) => {
-                        prizeTable.rows[index].cells[2].innerText = prize.remaining;
+                        prizeTable.rows[index].cells[3].innerText = prize.remaining;
                     });
 
                     // 顯示清除抽獎資料的訊息
@@ -109,7 +111,8 @@
         document.getElementById('draw_btn').addEventListener('click', function() {
             // 顯示抽獎動畫
             document.getElementById('loading-animation').style.display = 'block';
-            document.getElementById('info_msg').style.display = 'none';
+            document.getElementById('info_msg').innerText = '系統：抽獎中...';
+            //document.getElementById('info_msg').style.display = 'none';
 
             // 設置延遲2秒後開始抽獎
             setTimeout(function() {
@@ -139,11 +142,15 @@
                     // 更新獎品剩餘數量
                     let prizeTable = document.querySelector('.table tbody');
                     data.prizes.forEach((prize, index) => {
-                        prizeTable.rows[index].cells[2].innerText = prize.remaining;
+                        prizeTable.rows[index].cells[3].innerText = prize.remaining;
                     });
 
                     // 顯示抽獎訊息
-                    document.getElementById('info_msg').innerText = data.msg;
+                    // 偵測 data.msg，「“”」、「＜＞」內的內容，用 <p class="highlight"><></p> 標籤包裹
+                    let msg = data.msg;
+                    let msg_highlight = msg.replace(/“(.*?)”/g, '<b class="highlight">$1</b>');
+                    msg_highlight = msg_highlight.replace(/＜(.*?)＞/g, '<b class="highlight">$1</b>');
+                    document.getElementById('info_msg').innerHTML = msg_highlight;
                     document.getElementById('info_msg').style.display = 'block';
                 })
                 .catch(error => {
@@ -153,7 +160,7 @@
                     document.getElementById('info_msg').innerText = '抽獎發生錯誤，請稍後再試！';
                     document.getElementById('info_msg').style.display = 'block';
                 });
-            }, 1500);  // 延遲 1.5 秒後執行
+            }, 800);  // 延遲 0.8 秒後執行
         });
     </script>
 {% endblock %}

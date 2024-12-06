@@ -113,10 +113,9 @@ def draw_lottery(request):
                 Winner.objects.create(prize=prize, participant=winner)
                 still_need_draw_num -= 1
                 participants_list.remove(winner_name)
-                info_message = f"=== 中獎者：{winner_name} ===== 獎項：{winner_prize} === 恭喜～～～"
+                info_message = f"【中獎公告】恭喜 “{winner_name}” ---- 獲得獎項：＜{winner_prize}＞！！！"
             else:
-                print("錯誤：獎項已抽完或參與者已抽完")
-                info_message = "錯誤：獎項已抽完或參與者已抽完"
+                info_message = "警告：獎項已抽完或參與者已抽完"
             
             # winners 整理成 dict 格式，要包含 prize_name, participant_name, draw_date
             winners = []
@@ -144,7 +143,7 @@ def draw_lottery(request):
         elif action == 'clean_all_record':
             # print("清除所有紀錄")
             clean_all_record(mode=2)
-            info_message = "已清除所有中獎紀錄"
+            info_message = "系統：已清除所有中獎紀錄"
             # prize_status 整理所剩數量
             prize_status = []
             for prize in Prize.objects.order_by('order').all():

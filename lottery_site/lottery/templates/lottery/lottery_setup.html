@@ -5,7 +5,7 @@
 
     <!-- 獎品設置區域 -->
     <div class="container">
-        <h3>獎項設置</h3>
+        <h3>1. 獎項設置</h3>
         <form method="post" class="prize_setting">
             {% csrf_token %}
             <div class="form-group">
@@ -26,7 +26,7 @@
         <hr>
 
         <!-- 顯示現有獎項列表 -->
-        <h3>現有獎項</h3>
+        <h3>2. 現有獎項</h3>
         <table class="table all_prizes">
             <thead>
                 <tr>
@@ -60,33 +60,39 @@
     
     <!-- 抽獎者名單設置區域 -->
     <div class="container mt-4">
-        <h3>抽獎者名單設置</h3>
+        <h3>3. 抽獎者名單設置</h3>
         <form method="POST">
             {% csrf_token %}
-            <div class="form-group add_participants_area">
-                <textarea name="participants_text" class="form-control" rows="10" placeholder="請將名單從 Excel 黏貼至此，並以換行區分每一位抽獎者"></textarea>
+            <div class="d-flex add_participants_area">
+                <div class="form-group flex-grow-1 mr-4">
+                    <h4>參與者名單設置：</h4>
+                    <textarea name="participants_text" class="form-control" rows="10" placeholder="請將名單從 Excel 黏貼至此，並以換行區分每一位抽獎者"></textarea>
+                    <button type="submit" name="save_participants" class="btn btn-primary form-btn mt-2">儲存抽獎者名單</button>
+                </div>
+                {% if participants %}
+                    <div class="table-container flex-grow-1">
+                        <h4>已經輸入的參與者名單：</h4>
+                        <table class="table participants_table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>參與者名稱</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for participant in participants %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ participant }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
             </div>
-            <button type="submit" name="save_participants" class="btn btn-primary form-btn">儲存抽獎者名單</button>
+            
         </form>
-        {% if participants %}
-            <h4>已經輸入的參與者名單</h4>
-            <table class="table mt-4">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>參與者名稱</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for participant in participants %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>{{ participant }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
     </div>
 
 {% endblock %}

@@ -21,16 +21,16 @@ body {
 body {
     margin: 0;
     padding: 0;
-    height: 100vh;
     background: #f3f1f1; /* 背景颜色 */
     color: rgb(2, 0, 0);
-    overflow: hidden;
+    overflow-y: auto; /* 确保在内容超出时能够滚动 */
     font-family: Arial, sans-serif;
+    height: 100%;  /* 保证body高度为100% */
 }
 
 /* 创建雪花容器 */
 .snow {
-    position: absolute;
+    position: fixed;  /* 使用fixed定位让雪花背景不干扰滚动 */
     top: 0;
     left: 0;
     right: 0;
@@ -62,7 +62,6 @@ body {
     }
 }
 
-
 /* 抽獎動畫 字放大 */
 #loading-animation {
     position: fixed;
@@ -71,10 +70,9 @@ body {
     transform: translate(-50%, -50%);
     z-index: 9999;
     font-size: 80px;
-    color: #ff0022;
-    /* 字橫式 */
     writing-mode: vertical-lr;
 }
+
 
 /* 排版設定 */
 .sys-title {
@@ -115,6 +113,19 @@ body {
     margin-top: 10px;
 }
 
+.footer {
+    /* 文字離上面間距 */
+    padding-top: 5px;
+    /* padding-bottom: 5px; */
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #1595c0;
+    color: white;
+    text-align: center;
+}
+
 
 
 /* -----------------lottery_setting.html----------------- */
@@ -133,10 +144,90 @@ body {
 .th-control {
     width: 50%;
 }
-.add_participants_area {
-    width: 15%;
-}
 /* class: prize_setting 寬度佔一半 */
 .prize_setting {
     width: 15%;
+}
+.add_participants_area {
+    display: flex;
+    flex-wrap: wrap; /* 如果空间不足时换行 */
+    gap: 20px; /* 设置元素之间的间距 */
+    width: 100%;
+}
+
+.add_participants_area .form-group {
+    flex-grow: 1;
+}
+
+.table-container {
+    flex-grow: 1;
+    min-width: 300px; /* 确保表格不会过于窄 */
+}
+
+textarea {
+    width: 15%; /* 使textarea宽度填满容器 */
+}
+
+.table-container .table {
+    margin-top: 20px; /* 给表格增加一些上边距 */
+}
+
+.participants_table {
+    width: 70%;
+}
+
+/* -----------------draw_lottery.html----------------- */
+#title-prize_list {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: left;
+}
+#title-prize_list::before {
+    /* 獎杯圖示 */
+    content: "🏆";
+    margin-left: 10px;
+}
+#title-winner_list {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: left;
+}
+#title-winner_list::before {
+    /* 得獎者圖示 */
+    content: "🎉";
+    margin-left: 10px;
+}
+.prize_table {
+    width: 30%;
+}
+.th-draw-prize_name {
+    width: 50%;
+}
+.th-draw-quantity {
+    width: 25%;
+}
+.th-draw-remaining {
+    width: 25%;
+}
+
+.winner_table {
+    width: 70%;
+}
+.th-winner-order {
+    width: 10%;
+}
+.th-winner-prize_name {
+    width: 50%;
+}
+.th-winner-name {
+    width: 40%;
+}
+.alert-info {
+    width: 50%;
+}
+.highlight {
+    color: #eb0518;
+    font-weight: bold;
 }
