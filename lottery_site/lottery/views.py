@@ -1,7 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .models import Prize, Participant, Winner
-from django.core import serializers
 import random
 import json
 
@@ -162,6 +161,3 @@ def draw_lottery(request):
         'still_need_draw_num': still_need_draw_num,
         'info_message': info_message
     })
-
-def admin_dashboard(request):
-    return render(request, 'lottery/admin_dashboard.html')
