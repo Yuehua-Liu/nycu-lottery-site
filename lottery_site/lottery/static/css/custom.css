@@ -164,8 +164,12 @@ body {
     min-width: 300px; /* 确保表格不会过于窄 */
 }
 
-textarea {
-    width: 15%; /* 使textarea宽度填满容器 */
+#participants_text {
+    width: 450px;
+    height: 300px;
+    margin-bottom: 50px;
+    font-weight: bold;
+    text-align: left;
 }
 
 .table-container .table {

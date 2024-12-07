@@ -21,10 +21,12 @@ def clean_all_record(mode:int):
             prize.save()
 
 
+# 首頁
 def home(request):
     return render(request, 'lottery/lottery_setup.html')
 
 
+# 抽獎設定頁面
 def lottery_setup(request):
     prizes = Prize.objects.order_by('order').all()
     participants = Participant.objects.all()
@@ -72,6 +74,7 @@ def lottery_setup(request):
     })
 
 
+# 抽獎頁面
 def draw_lottery(request):
     info_message = ""
     prizes = Prize.objects.order_by('order').all()

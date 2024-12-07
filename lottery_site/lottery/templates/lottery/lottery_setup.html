@@ -66,8 +66,8 @@
             <div class="d-flex add_participants_area">
                 <div class="form-group flex-grow-1 mr-4">
                     <h4>參與者名單設置：</h4>
-                    <textarea name="participants_text" class="form-control" rows="10" placeholder="請將名單從 Excel 黏貼至此，並以換行區分每一位抽獎者"></textarea>
                     <button type="submit" name="save_participants" class="btn btn-primary form-btn mt-2">儲存抽獎者名單</button>
+                    <textarea id="participants_text" name="participants_text" class="form-control" rows="10" placeholder="請將名單從 Excel 黏貼至此，並以換行區分每一位抽獎者"></textarea>
                 </div>
                 {% if participants %}
                     <div class="table-container flex-grow-1">
